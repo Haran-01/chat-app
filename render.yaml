@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: brickred-broadcast-backend
+    env: node
+    rootDir: backend
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: CLIENT_URLS
+        value: https://brickred-broadcast-frontend.onrender.com,http://localhost:5173
+
+  - type: static
+    name: brickred-broadcast-frontend
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_BASE_URL
+        value: https://brickred-broadcast-backend.onrender.com
